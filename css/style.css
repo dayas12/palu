@@ -1,0 +1,153 @@
+/* Design reasons, one line each (antislop R-31):
+   Palette: charcoal panels from studio hardware, one orange for actions
+   (the original app's forensic orange), cyan reserved for measured data.
+   Type: system sans for labels, monospace only for numeric readouts,
+   because meters are numbers first. Radius 6px everywhere: hardware
+   panels, not pills. No gradients or glow: nothing here needs to shine,
+   the data is the content. Dark theme: this is a studio tool used next
+   to DAWs, which are dark for session-length comfort (R-21). */
+
+:root {
+  --bg: #101216;
+  --panel: #171a1f;
+  --panel-2: #1e2229;
+  --line: #2b3038;
+  --text: #e8eaed;
+  --dim: #a7adb6;
+  --orange: #ff7a1a;
+  --orange-text: #14100c;
+  --cyan: #4cc9dd;
+  --danger: #ff6b5e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.mono, .meters td, .knob-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+a { color: var(--cyan); }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 28px 32px 8px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: 0.2px; }
+h2 { font-size: 14px; margin: 22px 0 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); }
+h2:first-child { margin-top: 0; }
+.sub { margin: 0; color: var(--dim); max-width: 62ch; }
+
+.status {
+  margin: 4px 0 0;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--cyan);
+  white-space: nowrap;
+  font-size: 13px;
+}
+.status.error { color: var(--danger); }
+
+.layout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 32px 8px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.dropzone {
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: center;
+  background: var(--panel-2);
+}
+.dropzone.over { border-color: var(--orange); }
+.dropzone p { margin: 4px 0 10px; color: var(--dim); }
+.filemeta { font-size: 13px; }
+
+.btn {
+  display: inline-block;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--dim); }
+.btn.primary { background: var(--orange); border-color: var(--orange); color: var(--orange-text); font-weight: 600; }
+.btn.primary:hover { background: #ff8c3d; }
+.btn.wide { width: 100%; margin-top: 14px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.active { border-color: var(--orange); color: var(--orange); }
+
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.transport { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.check { display: flex; gap: 8px; align-items: center; cursor: pointer; padding: 6px 0; }
+.check input { width: 18px; height: 18px; accent-color: var(--orange); }
+.flags { display: grid; gap: 2px; }
+.note { color: var(--dim); font-size: 13px; }
+
+.meters { width: 100%; border-collapse: collapse; font-size: 13px; }
+.meters th, .meters td { padding: 6px 6px; border-bottom: 1px solid var(--line); text-align: right; }
+.meters th:first-child, .meters td:first-child { text-align: left; }
+.meters th { color: var(--dim); font-weight: 500; }
+.meters .empty { text-align: left; color: var(--dim); }
+.meters .down { color: var(--cyan); }
+.meters .up { color: var(--danger); }
+
+.preset-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.preset-row h2 { margin: 0; }
+.preset-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.preset-btns .btn { min-height: 38px; padding: 6px 12px; }
+
+.knob-group { margin-top: 20px; }
+.knob-group h3 { font-size: 13px; margin: 0 0 8px; color: var(--dim); text-transform: uppercase; letter-spacing: 1.2px; }
+.knob {
+  display: grid;
+  grid-template-columns: 170px 1fr 64px;
+  gap: 12px;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+.knob:last-child { border-bottom: none; }
+.knob label { font-size: 14px; }
+.knob-val { text-align: right; color: var(--cyan); font-size: 13px; }
+input[type="range"] { width: 100%; min-height: 32px; accent-color: var(--orange); cursor: pointer; }
+
+.foot { max-width: 1280px; margin: 0 auto; padding: 8px 32px 28px; color: var(--dim); font-size: 13px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; padding: 12px 16px; }
+  .top { flex-direction: column; padding: 20px 16px 4px; }
+  .status { white-space: normal; }
+  .knob { grid-template-columns: 120px 1fr 56px; }
+  .foot { padding: 8px 16px 24px; }
+}

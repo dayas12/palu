@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NaSuno Rebuild, Web Audio DSP Studio</title>
+<meta name="description" content="Browser audio DSP chain rebuilt from the public NaSuno source, with measured carrier analysis, zero-phase export filtering, TPDF dither, sub-bass cleanup and stereo decorrelation.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>NaSuno Rebuild</h1>
+    <p class="sub">The Web Audio DSP chain from the public NaSuno source, rebuilt with the features its README listed but its code never shipped. Everything runs locally in your browser. No audio leaves the device.</p>
+  </div>
+  <p class="status" id="status" role="status">No file loaded</p>
+</header>
+
+<main class="layout">
+  <section class="panel side" aria-label="File, playback and export">
+    <h2>File</h2>
+    <div class="dropzone" id="dropzone">
+      <p>Drop an audio file here, or</p>
+      <label class="btn" for="fileInput">Choose audio file</label>
+      <input type="file" id="fileInput" accept="audio/*,.wav,.mp3,.ogg,.flac,.m4a" hidden>
+      <p class="filemeta" id="fileMeta">WAV, MP3, OGG, FLAC or M4A. Decoded in the browser.</p>
+    </div>
+
+    <h2>Playback</h2>
+    <div class="transport">
+      <button class="btn primary" id="playBtn" disabled>Play processed</button>
+      <button class="btn" id="stopBtn" disabled>Stop</button>
+      <label class="check"><input type="checkbox" id="bypassToggle"> Bypass (hear original)</label>
+    </div>
+    <p class="note">Live preview runs the causal chain. Zero-phase filtering and stereo decorrelation need the whole file, so they apply at export only and the meter below proves what they did.</p>
+
+    <h2>Carrier measurement</h2>
+    <p class="note">Prominence of each suspected carrier tone above its local spectral floor, measured with the same FFT before and after rendering. The Bark and ATH columns come from the psychoacoustic models in <span class="mono">perceptual.js</span>.</p>
+    <table class="meters" id="meterTable">
+      <thead>
+        <tr><th>Carrier</th><th>Bark</th><th>ATH dB</th><th>Before</th><th>After</th><th>Change</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="6" class="empty">Load a file to measure it.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Export options</h2>
+    <div class="flags">
+      <label class="check"><input type="checkbox" id="flagSubClean" checked> Sub cleanup, 20 Hz high-pass</label>
+      <label class="check"><input type="checkbox" id="flagZeroPhase" checked> Zero-phase carrier erase (export only)</label>
+      <label class="check"><input type="checkbox" id="flagDecorrelate" checked> Stereo decorrelation, per channel (export only)</label>
+      <label class="check"><input type="checkbox" id="flagDither" checked> TPDF dither before 16-bit quantization</label>
+      <label class="check"><input type="checkbox" id="flagAdaptive"> Adaptive carrier depth, scaled by measured prominence weighted with the ATH curve</label>
+    </div>
+    <button class="btn primary wide" id="exportBtn" disabled>Render and download WAV</button>
+    <p class="note" id="exportNote">Export re-encodes from decoded PCM, so metadata chunks from the source file are not carried over. Output is 16-bit WAV at the source sample rate.</p>
+  </section>
+
+  <section class="panel knobs" aria-label="Processing controls">
+    <div class="preset-row">
+      <h2>Presets</h2>
+      <div class="preset-btns" id="presetBtns"></div>
+    </div>
+    <div id="knobGroups"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Rebuilt from <a href="https://github.com/AhmadHassan-BTed/NaSuno" rel="noopener">AhmadHassan-BTed/NaSuno</a> (MIT, see LICENSE-ORIGINAL). This tool changes audio in measurable ways; it does not promise that any detector, watermark or otherwise, will or will not find anything in the result. The meter above is the honest report.</p>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
